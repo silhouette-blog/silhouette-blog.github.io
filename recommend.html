@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recommend — Silhouette</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="wordmark">Silhouette</a>
+      <nav>
+        <a href="index.html" class="nav-link">All</a>
+        <a href="film.html" class="nav-link">Film</a>
+        <a href="tv.html" class="nav-link">TV</a>
+        <a href="recommend.html" class="nav-link active">Recommend</a>
+      </nav>
+    </div>
+    <div class="header-rule"></div>
+  </header>
+
+  <main>
+    <div class="filter-header">
+      <h1 class="filter-title">Recommend</h1>
+    </div>
+
+    <div class="rec-controls">
+      <div class="rec-filter-group">
+        <span class="rec-filter-label">Type</span>
+        <div class="rec-filter-btns" role="group" aria-label="Filter by type">
+          <button class="rec-btn active" data-filter-type="">All</button>
+          <button class="rec-btn" data-filter-type="film">Film</button>
+          <button class="rec-btn" data-filter-type="tv">TV</button>
+        </div>
+      </div>
+      <div class="rec-filter-group">
+        <span class="rec-filter-label">Year</span>
+        <div class="rec-filter-btns" role="group" aria-label="Filter by year">
+          <button class="rec-btn active" data-filter-year="">All</button>
+          <button class="rec-btn" data-filter-year="1944">1944</button>
+          <button class="rec-btn" data-filter-year="1962">1962</button>
+        </div>
+      </div>
+      <div class="rec-filter-group">
+        <span class="rec-filter-label">Length</span>
+        <div class="rec-filter-btns" role="group" aria-label="Sort by length">
+          <button class="rec-btn active" data-sort-runtime="">—</button>
+          <button class="rec-btn" data-sort-runtime="asc">Shortest first</button>
+          <button class="rec-btn" data-sort-runtime="desc">Longest first</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="rec-list" id="rec-list">
+
+      <article class="rec-item" data-type="film" data-year="1944" data-runtime="100">
+        <div class="rec-item-header">
+          <div class="rec-title-row">
+            <h2 class="rec-title">To Have and Have Not</h2>
+            <span class="rec-year">1944</span>
+          </div>
+          <div class="rec-tags">
+            <span class="tag">Film</span>
+            <span class="rec-runtime">1h 40m</span>
+          </div>
+        </div>
+        <p class="rec-body">For someone who was not bowled over by Casablanca (1942) unlike the rest of the western world, this movie absolutely landed. It has the strengths of Casablanca plus a charming wit — and of course, a sensational Lauren Bacall with whom Humphrey Bogart (and the rest of humanity) can't help but fall in love.</p>
+      </article>
+
+      <article class="rec-item" data-type="film" data-year="1962" data-runtime="210">
+        <div class="rec-item-header">
+          <div class="rec-title-row">
+            <h2 class="rec-title">Lawrence of Arabia</h2>
+            <span class="rec-year">1962</span>
+          </div>
+          <div class="rec-tags">
+            <span class="tag">Film</span>
+            <span class="rec-runtime">3h 30m</span>
+          </div>
+        </div>
+        <blockquote class="rec-quote">
+          "With Major Lawrence, mercy is a passion. With me, it is merely good manners. You may judge which motive is the more reliable."
+        </blockquote>
+        <p class="rec-body">Does not pass the Bechdel or cultural sensitivity tests, yet you cannot take your eyes off of this movie about the rise and downfall of a non-teenage chosen one. Gorgeous, well-paced, self-aware, never belabours its points.</p>
+      </article>
+
+    </section>
+
+    <p class="rec-empty" id="rec-empty" hidden>No recommendations match this filter.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="wordmark-sm">Silhouette</span>
+      <span class="footer-note">Film &amp; TV · <a href="https://www.instagram.com/silhouette_blog/" class="footer-link">@silhouette_blog</a></span>
+    </div>
+  </footer>
+
+  <script>
+    const list = document.getElementById('rec-list');
+    const empty = document.getElementById('rec-empty');
+    let activeType = '';
+    let activeYear = '';
+    let activeSort = '';
+
+    function applyFilters() {
+      const items = Array.from(list.querySelectorAll('.rec-item'));
+
+      if (activeSort) {
+        items.sort((a, b) => {
+          const diff = Number(a.dataset.runtime) - Number(b.dataset.runtime);
+          return activeSort === 'asc' ? diff : -diff;
+        });
+        items.forEach(item => list.appendChild(item));
+      }
+
+      let visible = 0;
+      list.querySelectorAll('.rec-item').forEach(item => {
+        const typeMatch = !activeType || item.dataset.type === activeType;
+        const yearMatch = !activeYear || item.dataset.year === activeYear;
+        const show = typeMatch && yearMatch;
+        item.hidden = !show;
+        if (show) visible++;
+      });
+      empty.hidden = visible > 0;
+    }
+
+    document.querySelectorAll('[data-filter-type]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter-type]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeType = btn.dataset.filterType;
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll('[data-filter-year]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-filter-year]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeYear = btn.dataset.filterYear;
+        applyFilters();
+      });
+    });
+
+    document.querySelectorAll('[data-sort-runtime]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-sort-runtime]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeSort = btn.dataset.sortRuntime;
+        applyFilters();
+      });
+    });
+  </script>
+
+  <script data-goatcounter="https://silhouette.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
